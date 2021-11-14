@@ -1,0 +1,9 @@
+{
+    "script": "index.js",
+    "watch": true,
+    "ignore_watch": ["logs", "public", ".git", "views"],
+    "watch_options": {
+        "followSymlinks": false
+    },
+    "name": "node_study_vini"
+}
