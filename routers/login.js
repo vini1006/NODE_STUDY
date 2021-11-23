@@ -5,7 +5,6 @@ const userService = require("../service/user/User");
 const { asyncErrorHandle } = require('../utilities/util');
 
 router.get('/', (req, res) => {
-    console.log(`🚀 ~ file: login.js ~ line 8 ~ router.get ~ /login`);
     res.render('login/login');
 });
 

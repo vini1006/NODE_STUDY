@@ -12,8 +12,10 @@ window.onload = () => {
             alert('회원가입 성공');
             location.href = axiosResult.data.redirect;
         } catch (error) {
+            let errMsg = error;
+            if(error === "DUPLICATED") errMsg = "중복";
             console.error(error);
-            return alert(error);
+            return alert(errMsg);
         }
         
     })

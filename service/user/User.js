@@ -9,7 +9,8 @@ class User {
             const signUpUser = await userModel.createUser(id, pass, email);
             return signUpUser;
         } catch (error) {
-            throw error;
+            if(error.code == 11000) throw "DUPLICATED";
+            else throw error;
         }
     }
     
