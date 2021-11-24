@@ -25,6 +25,8 @@ window.onload = () => {
                 }break;
             }
 
+            location.href = "/board/"
+
         } catch (error) {
             return alert(error)
         }

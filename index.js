@@ -1,8 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const http = require('http');
 const app = express();
 const port = 3000;
 
+const { Server } = require('socket.io');
+
+const server = http.createServer(app);
+const io =  new Server(server);
 const path = require('path');
 
 require('dotenv').config();
@@ -21,18 +26,27 @@ app.use(cookieParser());
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico'))); //favicon 별도처리
 
 const setReqUser = (req, res, next) => {
+    console.log("setReq")
     const { cookies } = req;
-    console.log(`🚀 ~ file: index.js ~ line 25 ~ setReqUser ~ cookies`, cookies)
     const token = cookies[process.env.COOKIE_NAME];
-    console.log(`🚀 ~ file: index.js ~ line 27 ~ setReqUser ~ token`, token)
-    if(!token) return next();
+    const originalUrl = req.originalUrl;
+    if(!token) {
+        if(originalUrl.includes("/login")) {
+            return next();
+        } else {
+            return res.redirect('/login');
+        }
+    }
 
     const { verifyJWT } = require('./utilities/auth');
 
     verifyJWT(token).then((foundUser) => {
         req.user = foundUser;
         next();
-    }).catch((error) => { next(); });
+    }).catch((error) => {
+        console.log(`🚀 ~ file: index.js ~ line 41 ~ verifyJWT ~ error`, error)
+        next(); 
+    });
 }
 
 app.use(setReqUser);
@@ -53,6 +67,7 @@ app.get('/', (req, res) => {
 
 app.use('/login', require('./routers/login')) //login router
 app.use('/user', require('./routers/user.js'))
+app.use('/board', require('./routers/board'))
 
 app.use((req, res, next) => { //404 error 처리
     res.status(400).send('404!');
